@@ -20,15 +20,27 @@ jobs:
           java-version: 21
       - name: Create app project
         run: |
-          mkdir -p app/www
+          mkdir -p app/www app/assets ~/.android
           NEWEST="$(git log --diff-filter=AM --name-only --format= -- '*.html' | head -1)"
           echo "Using $NEWEST"
-          cp "$NEWEST" app/www/index.html
+          python3 - "$NEWEST" <<'PY'
+          import re, sys, base64, os
+          h = open(sys.argv[1], encoding='utf8').read()
+          for name, data in re.findall(r'<!--ASSET:([\w.-]+):([A-Za-z0-9+/=]+)-->', h):
+              path = os.path.expanduser('~/.android/debug.keystore') if name == 'debug.keystore' else 'app/assets/' + name
+              open(path, 'wb').write(base64.b64decode(data))
+          m = re.search(r'id="appicon" href="data:image/png;base64,([A-Za-z0-9+/=]+)"', h)
+          if m:
+              open('app/assets/icon-only.png', 'wb').write(base64.b64decode(m.group(1)))
+          h = re.sub(r'<!--ASSET:[^>]*-->\n?', '', h)
+          open('app/www/index.html', 'w', encoding='utf8').write(h)
+          PY
           cd app
           npm init -y
-          npm install @capacitor/core@8 @capacitor/cli@8 @capacitor/android@8
-          npx cap init "Tide Thai" com.tidethai.app --web-dir www
+          npm install @capacitor/core@8 @capacitor/cli@8 @capacitor/android@8 @capacitor/assets
+          npx cap init "เช็คน้ำ เช็คลม" com.tidethai.app --web-dir www
           npx cap add android
+          npx @capacitor/assets generate --android || echo "icon step failed, keeping default icon"
           npx cap sync android
       - name: Build APK
         run: |
