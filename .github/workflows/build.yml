@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -19,7 +21,9 @@ jobs:
       - name: Create app project
         run: |
           mkdir -p app/www
-          cp "$(ls *.html | head -1)" app/www/index.html
+          NEWEST="$(git log --diff-filter=AM --name-only --format= -- '*.html' | head -1)"
+          echo "Using $NEWEST"
+          cp "$NEWEST" app/www/index.html
           cd app
           npm init -y
           npm install @capacitor/core@8 @capacitor/cli@8 @capacitor/android@8
@@ -30,7 +34,7 @@ jobs:
         run: |
           cd app/android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug || (sleep 90 && ./gradlew assembleDebug)
       - name: Publish APK
         uses: softprops/action-gh-release@v2
         with:
