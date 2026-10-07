@@ -100,6 +100,8 @@
             margin: 26px 20px 22px; padding-top: 18px; border-top: 1px solid var(--rule);
             font-size: 15px; }
   .credit b { font-weight: 600; }
+  .users { margin: -10px 20px 24px; text-align: center; color: var(--muted); font-size: 13px; }
+  .users b { font-family: var(--num); font-weight: 600; font-size: 15px; color: var(--ink); }
 
   .seg { display: flex; gap: 8px; padding: 10px 20px; }
   .seg button { flex: 1; height: 40px; border: 1px solid var(--rule); background: transparent;
@@ -109,9 +111,6 @@
   .open { display: block; margin: 0 20px 10px; padding: 9px 0; text-align: center;
           color: var(--mark); border: 1px solid var(--mark); border-radius: 999px;
           text-decoration: none; font-weight: 600; }
-  #windy { display: block; width: 100%; border: 0;
-           height: calc(100vh - 232px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-           min-height: 420px; background: var(--night); }
   .offline { margin: 14px 20px; color: var(--muted); }
   .follow { display: flex; align-items: center; gap: 5px; padding: 8px 20px 0; overflow-x: auto; scrollbar-width: none; }
   .follow::-webkit-scrollbar { display: none; }
@@ -171,6 +170,43 @@
   .row .dead { color: var(--mark); }
   .top[hidden] { display: none; }
   .windmode .seg { padding-top: 14px; }
+  #spmapwrap { position: relative; height: 52vh; min-height: 320px; background: var(--night); }
+  #spmap { position: absolute; inset: 0; z-index: 0; }
+  #spcross { position: absolute; left: 50%; top: 50%; width: 30px; height: 42px; margin: -42px 0 0 -15px;
+             z-index: 500; pointer-events: none; }
+  .spfab { position: absolute; right: 12px; bottom: 26px; z-index: 500; padding: 10px 16px; border: none;
+           border-radius: 999px; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 15px;
+           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+  .spme { position: absolute; right: 12px; top: 12px; z-index: 500; width: 42px; height: 42px; padding: 0;
+          border: 1px solid var(--rule); border-radius: 50%; background: var(--paper); color: var(--ink); }
+  .spme svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; vertical-align: middle; }
+  .sppin { background: none; border: none; }
+  .spcard { margin: 0 20px; padding: 14px 0 6px; }
+  .spcard h2 { margin: 0; font-size: 20px; font-weight: 600; }
+  .spcard .meta { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .spcard .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+  .spcard .tags span { padding: 3px 11px; border: 1px solid var(--rule); border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .spcard .txt { margin: 10px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .spcard img { display: block; width: 100%; margin: 12px 0 0; border-radius: 14px; }
+  .sptide { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 0;
+            padding: 10px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+            color: var(--muted); font-size: 14px; }
+  .sptide button { flex: none; border: none; background: transparent; color: var(--mark); font-weight: 600; font-size: 14px; }
+  .spacts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 0; }
+  .spacts a.rp-btn { text-decoration: none; color: var(--paper); }
+  .spacts .rp-btn.main { margin-left: 0; }
+  .spacts .like { margin-left: auto; border-color: var(--rule); }
+  .spacts .like.on { border-color: var(--good); color: var(--good); }
+  .spacts .del { border: none; background: transparent; color: var(--muted); font-size: 13px; }
+  .leaflet-container { font-family: var(--text); }
+  .wlinks { margin: 4px 20px 0; border-top: 1px solid var(--rule); }
+  .wlinks a { display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+              padding: 16px 0; border-bottom: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+  .wlinks b { font-size: 20px; font-weight: 600; }
+  .wlinks span { color: var(--muted); font-size: 14px; }
+  .wlinks a::after { content: "เปิด"; flex: none; margin-left: auto; padding: 5px 14px; border: 1px solid var(--mark);
+                     border-radius: 999px; color: var(--mark); font-size: 14px; font-weight: 600; }
+  .wlinks a span { margin-right: auto; }
   .where { display: flex; align-items: center; justify-content: space-between; gap: 12px;
            margin: 0 20px 10px; color: var(--muted); font-size: 15px; }
   .where button { flex: none; padding: 7px 14px; border: 1px solid var(--ink);
@@ -239,22 +275,23 @@
     <img class="logo" src="data:image/png;base64,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" width="36" height="36" alt="">
     <span>สร้างโดย <b>Toey Seafishingclub</b></span>
   </p>
+  <p class="users" id="users" hidden></p>
 </section>
 
 <section id="wind" class="page">
-  <div class="seg" role="group" aria-label="เลือกชั้นข้อมูล">
-    <button id="o-wind" onclick="setOverlay('wind')">ลม</button>
-    <button id="o-rain" onclick="setOverlay('rain')">ฝน</button>
-    <button id="o-radar" onclick="setOverlay('radar')">เรดาร์ฝน</button>
-    <button id="o-waves" onclick="setOverlay('waves')">คลื่น</button>
-  </div>
+  <h1 class="rp-title">ลม ฝน คลื่น</h1>
+  <p class="rp-sub">กดเพื่อเปิด Windy ที่ตำแหน่งของคุณ แผนที่และตารางพยากรณ์จะเปิดในแอปหรือเว็บ Windy</p>
   <div class="where">
     <span id="where" aria-live="polite"></span>
     <button onclick="locate(true)">หาตำแหน่งใหม่</button>
   </div>
-  <a id="fullwindy" class="open" target="_blank" rel="noopener" hidden>เปิด Windy เต็มรูปแบบที่ตำแหน่งของฉัน</a>
-  <iframe id="windy" title="แผนที่ลมและฝนจาก Windy" allow="geolocation"></iframe>
-  <p class="offline" id="offline" hidden>หน้านี้ต้องต่อเน็ต ตรวจการเชื่อมต่อแล้วเปิดใหม่อีกครั้ง</p>
+  <div class="wlinks">
+    <a id="w-wind" target="_blank" rel="noopener"><b>ลม</b><span>ความเร็วและทิศลม</span></a>
+    <a id="w-rain" target="_blank" rel="noopener"><b>ฝน</b><span>ฝนและพายุฝนฟ้าคะนอง</span></a>
+    <a id="w-radar" target="_blank" rel="noopener"><b>เรดาร์ฝน</b><span>ฝนที่ตกอยู่ตอนนี้</span></a>
+    <a id="w-waves" target="_blank" rel="noopener"><b>คลื่น</b><span>ความสูงและทิศคลื่น</span></a>
+  </div>
+  <p class="note">ข้อมูลและแผนที่ในหน้าที่เปิดขึ้นเป็นของ Windy.com</p>
 </section>
 
 <section id="report" class="page">
@@ -281,6 +318,35 @@
   </div>
 </section>
 
+<section id="spots" class="page">
+  <h1 class="rp-title">หมายตกปลาของน้าๆ</h1>
+  <p class="rp-sub" id="sp-sub">แตะหมุดเพื่อดูรายละเอียด หมายที่ปักทุกคนที่ใช้แอปเห็นได้</p>
+  <div id="spmapwrap">
+    <div id="spmap"></div>
+    <svg id="spcross" viewBox="-15 -42 30 42" hidden aria-hidden="true"><path d="M0 0C-9-12-13-18-13-26a13 13 0 0 1 26 0c0 8-4 14-13 26z" fill="#D81E26" stroke="#fff" stroke-width="2"/><circle cy="-26" r="4.500" fill="#fff"/></svg>
+    <button class="spme" onclick="spMe()" aria-label="ไปที่ตำแหน่งของฉัน"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+    <button class="spfab" id="sp-fab" onclick="spAddMode(true)">ปักหมายใหม่</button>
+  </div>
+  <p class="rp-msg" id="sp-msg" aria-live="polite"></p>
+
+  <div class="rp-box" id="sp-form" hidden>
+    <p class="rp-attach" style="margin:0 0 10px">เลื่อนแผนที่ให้หมุดแดงอยู่ตรงหมาย หรือกดปุ่มวงกลมเพื่อใช้ตำแหน่งของคุณ</p>
+    <input id="sp-by" maxlength="30" placeholder="ชื่อของคุณ" autocomplete="nickname">
+    <input id="sp-title" maxlength="60" placeholder="ชื่อหมาย เช่น กองหินหน้าเกาะ">
+    <input id="sp-fish" maxlength="80" placeholder="ปลาที่ได้ เว้นวรรคคั่น เช่น อินทรี สาก หมึก">
+    <textarea id="sp-note" maxlength="300" placeholder="โน้ต เช่น ความลึก ช่วงน้ำที่กินดี วิธีไป"></textarea>
+    <img class="rp-thumb" id="sp-thumb" alt="" hidden>
+    <div class="rp-acts">
+      <label class="rp-btn">เพิ่มรูป<input type="file" id="sp-file" accept="image/*" hidden onchange="spPick(this.files[0])"></label>
+      <button class="rp-btn" onclick="spAddMode(false)">ยกเลิก</button>
+      <button class="rp-btn main" id="sp-send" onclick="spSave()">ปักหมาย</button>
+    </div>
+  </div>
+
+  <div class="spcard" id="sp-card"></div>
+  <p class="note">แผนที่ © OpenStreetMap contributors ปุ่มนำทางจะเปิดแอป Google Maps</p>
+</section>
+
 <nav>
   <button id="b-tide" onclick="show('tide')">
     <svg viewBox="0 0 24 24"><path d="M2 9c2.500-3 5-3 7.500 0s5 3 7.500 0 3.500-2.500 5-1.500M2 16c2.500-3 5-3 7.500 0s5 3 7.500 0 3.500-2.500 5-1.500"/></svg>น้ำ</button>
@@ -288,6 +354,8 @@
     <svg viewBox="0 0 24 24"><path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7a2.500 2.500 0 1 1-2.500 2.500"/></svg>ลม ฝน</button>
   <button id="b-report" onclick="show('report')">
     <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.500h5"/></svg>รายงาน</button>
+  <button id="b-spots" onclick="show('spots')">
+    <svg viewBox="0 0 24 24"><path d="M12 21c-4.500-5.500-7-8.500-7-12a7 7 0 0 1 14 0c0 3.500-2.500 6.500-7 12z"/><circle cx="12" cy="9" r="2.500"/></svg>หมาย</button>
 </nav>
 
 <script>
@@ -299,7 +367,7 @@ const DIRS = ["เหนือ","ตะวันออกเฉียงเห�
               "ใต้","ตะวันตกเฉียงใต้","ตะวันตก","ตะวันตกเฉียงเหนือ"];
 
 let station, dayOffset = 0, cursorX = null, current = "tide";
-let overlay = "wind", windyFor = "";
+
 
 /* ---------- station list ---------- */
 const sel = $("place");
@@ -357,6 +425,7 @@ function show(name) {
   if (name === "tide") drawTide();
   if (name === "wind") locate();
   if (name === "report") rpOpen();
+  if (name === "spots") spOpen();
 }
 
 /* ---------- tide maths ---------- */
@@ -729,8 +798,6 @@ setInterval(() => {
 let here = null, locating = false;
 try { here = JSON.parse(localStorage.getItem("here")); } catch (e) {}
 
-function setOverlay(name) { overlay = name; loadWindy(); }
-
 /* The wind page follows the phone's own position, not the tide station. */
 function locate(force) {
   loadWindy();
@@ -752,22 +819,13 @@ function locate(force) {
 }
 
 function loadWindy() {
-  ["wind", "rain", "radar", "waves"].forEach(o => $("o-" + o).classList.toggle("on", o === overlay));
-  $("offline").hidden = navigator.onLine !== false;
-  $("fullwindy").hidden = !here;
-  if (!here) return;
-  if (!locating) $("where").textContent = "ตำแหน่งของคุณ " + here.lat.toFixed(3) + ", " + here.lon.toFixed(3);
-  const p = here.lat.toFixed(3) + "," + here.lon.toFixed(3) + ",9";
-  $("fullwindy").href = "https://www.windy.com/" + here.lat.toFixed(3) + "/" + here.lon.toFixed(3)
-    + "?" + (overlay === "wind" ? "" : overlay + ",") + p;
-  const key = here.lat.toFixed(2) + "," + here.lon.toFixed(2) + overlay;
-  if (windyFor === key) return;
-  windyFor = key;
-  $("windy").src = "https://embed.windy.com/embed.html?type=map&location=coordinates"
-    + "&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=9&overlay=" + overlay
-    + "&product=ecmwf&level=surface&lat=" + here.lat + "&lon=" + here.lon
-    + "&detailLat=" + here.lat + "&detailLon=" + here.lon
-    + "&detail=true&marker=true&message=true";
+  const lat = here ? here.lat : 13.0, lon = here ? here.lon : 101.0, zoom = here ? 9 : 6;
+  if (!locating) $("where").textContent = here ? "ตำแหน่งของคุณ " + lat.toFixed(3) + ", " + lon.toFixed(3)
+    : "ยังไม่มีตำแหน่ง จะเปิดที่ภาพรวมอ่าวไทย";
+  [["wind", ""], ["rain", "rain,"], ["radar", "radar,"], ["waves", "waves,"]].forEach(o => {
+    $("w-" + o[0]).href = "https://www.windy.com/" + (here ? lat.toFixed(3) + "/" + lon.toFixed(3) : "")
+      + "?" + o[1] + lat.toFixed(3) + "," + lon.toFixed(3) + "," + zoom;
+  });
 }
 
 /* ---------- reports from the water (Firebase, free Spark plan) ---------- */
@@ -802,15 +860,15 @@ async function rpInit() {
   if (!auth.currentUser) await au.signInAnonymously(auth);
   fb = { fs, db: fs.getFirestore(app) };
   rp.uid = auth.currentUser.uid;
+  const ad = await fs.getDoc(fs.doc(fb.db, "admins", rp.uid)).catch(() => null);
+  rp.admin = !!(ad && ad.exists());
   return fb;
 }
 async function rpOpen() {
   if (rp.busy) return;
   rp.busy = true; rpMsg(rp.posts.length ? "" : "กำลังโหลด");
   try {
-    const { fs, db } = await rpInit();
-    const ad = await fs.getDoc(fs.doc(db, "admins", rp.uid)).catch(() => null);
-    rp.admin = !!(ad && ad.exists());
+    await rpInit();
     rp.busy = false;
     await rpLoad(Date.now() - rp.at > 60000);
   } catch (e) { rp.busy = false; rpMsg(rpErr(e), true); }
@@ -973,6 +1031,225 @@ async function rpDelete(id) {
     rp.posts = rp.posts.filter(q => q.id !== id); rpRender(); rpMsg("ลบแล้ว");
   } catch (e) { rpMsg(rpErr(e), true); }
 }
+
+/* ---------- fishing spots on an OpenStreetMap map ---------- */
+const TILES = { url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' };
+const LEAF = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/";
+let sp = { map: null, list: [], marks: {}, pick: null, adding: false, img: "", pending: null, busy: false, at: 0 };
+
+function spMsg(text, bad) { $("sp-msg").textContent = text || ""; $("sp-msg").classList.toggle("bad", !!bad); }
+function spLeaflet() {
+  if (window.L) return Promise.resolve();
+  return new Promise((res, rej) => {
+    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = LEAF + "leaflet.min.css"; document.head.appendChild(l);
+    const s = document.createElement("script"); s.src = LEAF + "leaflet.min.js";
+    s.onload = res; s.onerror = () => rej(new Error("map")); document.head.appendChild(s);
+  });
+}
+function spIcon(on) {
+  const s = on ? 1.3 : 1, w = 26 * s, h = 36 * s;
+  return L.divIcon({ className: "sppin", iconSize: [w, h], iconAnchor: [w / 2, h],
+    html: '<svg width="' + w + '" height="' + h + '" viewBox="-13 -36 26 36"><path d="M0 0C-8-10-11-15-11-22a11 11 0 0 1 22 0c0 7-3 12-11 22z" fill="'
+      + (on ? "#D81E26" : "#001D47") + '" stroke="#fff" stroke-width="2"/><circle cy="-22" r="4" fill="#fff"/></svg>' });
+}
+function nearStation(lat, lon) {
+  let best = null, bd = 1e9;
+  STATIONS.forEach(s => {
+    const d = Math.hypot((s.lon - lon) * Math.cos(lat * Math.PI / 180), s.lat - lat) * 111;
+    if (d < bd) { bd = d; best = s; }
+  });
+  return { s: best, km: bd };
+}
+async function spOpen() {
+  try { if (!$("sp-by").value) $("sp-by").value = localStorage.getItem("rpname") || ""; } catch (e) {}
+  try {
+    if (!sp.map) {
+      spMsg("กำลังโหลดแผนที่");
+      await spLeaflet();
+      sp.map = L.map("spmap", { zoomControl: false }).fitBounds([[5.6, 97.3], [20.5, 105.7]]);
+      L.control.zoom({ position: "bottomleft" }).addTo(sp.map);
+      L.tileLayer(TILES.url, { maxZoom: 19, attribution: TILES.attribution }).addTo(sp.map);
+      sp.map.on("click", () => { if (!sp.adding) spSelect(null); });
+    }
+    setTimeout(() => sp.map.invalidateSize(), 50);
+    await spLoad(Date.now() - sp.at > 60000);
+  } catch (e) {
+    spMsg(e && e.message === "map" ? "โหลดแผนที่ไม่ได้ ตรวจการเชื่อมต่อเน็ตแล้วเปิดแท็บนี้ใหม่" : rpErr(e), true);
+  }
+}
+async function spLoad(force) {
+  if (!force && sp.list.length) { spDraw(); return; }
+  const { fs, db } = await rpInit();
+  const snap = await fs.getDocs(fs.query(fs.collection(db, "spots"), fs.orderBy("t", "desc"), fs.limit(400)));
+  sp.list = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+  sp.at = Date.now(); spDraw();
+  spMsg(sp.list.length ? "" : "ยังไม่มีหมาย ปักเป็นคนแรกได้เลย");
+}
+function spDraw() {
+  Object.values(sp.marks).forEach(m => m.remove());
+  sp.marks = {};
+  sp.list.forEach(p => {
+    if (typeof p.lat !== "number" || typeof p.lon !== "number") return;
+    sp.marks[p.id] = L.marker([p.lat, p.lon], { icon: spIcon(p.id === sp.pick), title: p.title || "" })
+      .addTo(sp.map).on("click", ev => { if (ev.originalEvent) ev.originalEvent.stopPropagation(); if (!sp.adding) spSelect(p.id); });
+  });
+  spCard();
+}
+function spSelect(id) {
+  if (sp.pick && sp.marks[sp.pick]) sp.marks[sp.pick].setIcon(spIcon(false));
+  sp.pick = id;
+  if (id && sp.marks[id]) { sp.marks[id].setIcon(spIcon(true)); sp.marks[id].setZIndexOffset(1000); }
+  spCard();
+}
+function spCard() {
+  const p = sp.list.find(q => q.id === sp.pick);
+  if (!p || sp.adding) { $("sp-card").innerHTML = ""; return; }
+  const ms = p.t && p.t.toMillis ? p.t.toMillis() : Date.now(), near = nearStation(p.lat, p.lon);
+  const likes = p.likes || {}, n = Object.keys(likes).length, mine = !!likes[rp.uid];
+  const tags = String(p.fish || "").split(/[\s,]+/).filter(Boolean).slice(0, 8);
+  $("sp-card").innerHTML = "<h2>" + rpEsc(p.title) + "</h2>"
+    + '<p class="meta">ปักโดย ' + rpEsc(p.by) + " เมื่อ " + new Date(ms).toLocaleDateString("th-TH",
+        { day: "numeric", month: "short", year: "numeric" }) + "</p>"
+    + (tags.length ? '<div class="tags">' + tags.map(x => "<span>" + rpEsc(x) + "</span>").join("") + "</div>" : "")
+    + (p.note ? '<p class="txt">' + rpEsc(p.note) + "</p>" : "")
+    + '<div id="sp-img"></div>'
+    + '<div class="sptide"><span>สถานีน้ำใกล้สุด ' + near.s.th.replace(/ \(.*/, "") + " ราว " + Math.round(near.km)
+    + ' กม.</span><button onclick="spTide(\'' + near.s.id + '\')">ดูกราฟน้ำ</button></div>'
+    + '<div class="spacts"><a class="rp-btn main" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='
+    + p.lat + "," + p.lon + '">นำทาง</a>'
+    + (p.hasImg ? '<button class="rp-btn" id="sp-see" onclick="spPhoto(\'' + p.id + '\')">ดูรูป</button>' : "")
+    + '<button class="rp-btn like' + (mine ? " on" : "") + '" aria-pressed="' + mine + '" onclick="spLike(\'' + p.id + '\')">👍' + (n ? " " + n : "") + "</button>"
+    + (p.uid === rp.uid || rp.admin ? '<button class="del" onclick="spDelete(\'' + p.id + '\')">ลบหมาย</button>' : "")
+    + "</div>";
+}
+function spTide(id) { sel.value = id; setStation(); try { localStorage.setItem("station", id); } catch (e) {} dayOffset = 0; cursorX = null; show("tide"); }
+async function spPhoto(id) {
+  $("sp-see").disabled = true;
+  try {
+    const { fs, db } = await rpInit(), d = await fs.getDoc(fs.doc(db, "spotimgs", id));
+    const src = d.exists() ? d.data().img : "";
+    if (sp.pick !== id) return;
+    if (typeof src === "string" && src.startsWith("data:image/")) { $("sp-img").innerHTML = '<img src="' + src + '" alt="รูปหมาย">'; $("sp-see").hidden = true; }
+    else spMsg("ไม่พบรูปของหมายนี้", true);
+  } catch (e) { spMsg(rpErr(e), true); if ($("sp-see")) $("sp-see").disabled = false; }
+}
+async function spLike(id) {
+  const p = sp.list.find(q => q.id === id);
+  if (!p) return;
+  try {
+    const { fs, db } = await rpInit();
+    p.likes = p.likes || {};
+    const off = !!p.likes[rp.uid];
+    if (off) delete p.likes[rp.uid]; else p.likes[rp.uid] = true;
+    spCard();
+    await fs.updateDoc(fs.doc(db, "spots", id), { ["likes." + rp.uid]: off ? fs.deleteField() : true });
+  } catch (e) { spMsg(rpErr(e), true); }
+}
+async function spDelete(id) {
+  if (!confirm("ลบหมายนี้")) return;
+  try {
+    const { fs, db } = await rpInit();
+    await fs.deleteDoc(fs.doc(db, "spots", id));
+    fs.deleteDoc(fs.doc(db, "spotimgs", id)).catch(() => {});
+    sp.list = sp.list.filter(q => q.id !== id); sp.pick = null; spDraw(); spMsg("ลบแล้ว");
+  } catch (e) { spMsg(rpErr(e), true); }
+}
+function spAddMode(on) {
+  sp.adding = on;
+  $("spcross").hidden = !on; $("sp-form").hidden = !on; $("sp-fab").hidden = on;
+  $("sp-sub").textContent = on ? "เลื่อนแผนที่ให้หมุดแดงอยู่ตรงหมายที่จะปัก" : "แตะหมุดเพื่อดูรายละเอียด หมายที่ปักทุกคนที่ใช้แอปเห็นได้";
+  if (on) { spSelect(null); if (sp.map && sp.map.getZoom() < 11) spMsg("ซูมเข้าไปให้ใกล้ขึ้นก่อนปัก จะได้ตำแหน่งแม่น"); }
+  else { spMsg(""); spCard(); }
+}
+function spMe() {
+  if (!navigator.geolocation || !sp.map) return;
+  spMsg("กำลังหาตำแหน่งของคุณ");
+  navigator.geolocation.getCurrentPosition(p => { sp.map.setView([p.coords.latitude, p.coords.longitude], 15); spMsg(""); },
+    () => spMsg("หาตำแหน่งไม่ได้ เปิด GPS และอนุญาตตำแหน่งให้แอปนี้", true),
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+}
+function spPick(file) {
+  if (!file) return;
+  spMsg("กำลังเตรียมรูป รอสักครู่"); $("sp-send").disabled = true;
+  sp.pending = shrinkPhoto(file).then(out => {
+    sp.pending = null; $("sp-send").disabled = false;
+    if (!out) { spMsg("ใช้รูปนี้ไม่ได้ ลองรูปอื่น", true); return; }
+    sp.img = out; $("sp-thumb").src = out; $("sp-thumb").hidden = false; spMsg("แนบรูปแล้ว");
+  });
+}
+function shrinkPhoto(file) {
+  return new Promise(done => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      let out = "";
+      try {
+        let side = 1000, q = 0.62;
+        for (let k = 0; k < 6; k++) {
+          const s = Math.min(1, side / Math.max(img.width, img.height)), c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.width * s)); c.height = Math.max(1, Math.round(img.height * s));
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          out = c.toDataURL("image/jpeg", q);
+          if (out.length <= 300000) break;
+          side *= 0.8; q -= 0.06;
+        }
+      } catch (e) { out = ""; }
+      URL.revokeObjectURL(url);
+      done(out.startsWith("data:image/jpeg") && out.length >= 2000 && out.length <= 380000 ? out : "");
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); done(""); };
+    img.src = url;
+  });
+}
+async function spSave() {
+  const by = $("sp-by").value.trim(), title = $("sp-title").value.trim();
+  if (!by) { spMsg("ใส่ชื่อของคุณก่อน", true); $("sp-by").focus(); return; }
+  if (!title) { spMsg("ตั้งชื่อหมายก่อน", true); $("sp-title").focus(); return; }
+  if (sp.busy) return;
+  if (sp.pending) await sp.pending;
+  sp.busy = true; $("sp-send").disabled = true; spMsg("กำลังปักหมาย");
+  try {
+    const { fs, db } = await rpInit(), c = sp.map.getCenter();
+    const lat = +c.lat.toFixed(5), lon = +c.lng.toFixed(5);
+    try { localStorage.setItem("rpname", by); } catch (e) {}
+    const ref = await fs.addDoc(fs.collection(db, "spots"), { uid: rp.uid, by, title, fish: $("sp-fish").value.trim(),
+      note: $("sp-note").value.trim(), lat, lon, hasImg: !!sp.img, likes: {}, t: fs.serverTimestamp() });
+    if (sp.img) await fs.setDoc(fs.doc(db, "spotimgs", ref.id), { uid: rp.uid, img: sp.img });
+    ["sp-title", "sp-fish", "sp-note"].forEach(i => { $(i).value = ""; });
+    sp.img = ""; $("sp-thumb").hidden = true; $("sp-file").value = "";
+    sp.busy = false; $("sp-send").disabled = false;
+    spAddMode(false);
+    await spLoad(true); spSelect(ref.id); spMsg("ปักหมายแล้ว");
+  } catch (e) { sp.busy = false; $("sp-send").disabled = false; spMsg(rpErr(e), true); }
+}
+
+/* ---------- how many devices have opened the app ----------
+   Each browser or install signs in anonymously once and leaves one marker
+   document. The number shown is a count of those markers. */
+function usersShow(n) {
+  if (!(n > 0)) return;
+  $("users").innerHTML = "มีน้าๆ เปิดใช้แอปนี้แล้ว <b>" + Number(n).toLocaleString("th-TH") + "</b> เครื่อง";
+  $("users").hidden = false;
+}
+async function usersCount() {
+  let cache = null;
+  try { cache = JSON.parse(localStorage.getItem("users")); } catch (e) {}
+  if (cache) usersShow(cache.n);
+  if (cache && Date.now() - cache.t < 3600000) return;
+  try {
+    const { fs, db } = await rpInit();
+    let seen = "";
+    try { seen = localStorage.getItem("seen") || ""; } catch (e) {}
+    if (seen !== rp.uid) {
+      await fs.setDoc(fs.doc(db, "visitors", rp.uid), { t: fs.serverTimestamp() }).catch(() => {});
+      try { localStorage.setItem("seen", rp.uid); } catch (e) {}
+    }
+    const n = (await fs.getCount(fs.collection(db, "visitors"))).data().count;
+    usersShow(n);
+    try { localStorage.setItem("users", JSON.stringify({ n, t: Date.now() })); } catch (e) {}
+  } catch (e) {}
+}
+setTimeout(usersCount, 1500);
 
 show("tide");
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (current === "tide") drawTide(); });
